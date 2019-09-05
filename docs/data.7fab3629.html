@@ -1,0 +1,728 @@
+<p>name: inverse
+layout: true
+class: center, middle, inverse</p>
+<hr>
+<h1 id="programação-funcional-em-python-funciona">Programação funcional em Python. Funciona?</h1>
+<h2 id="python-cerrado-2019">Python Cerrado 2019</h2>
+<p>Fábio Macêdo Mendes</p>
+<hr>
+<h2 id="programação-orientada-a-funções">Programação orientada a funções</h2>
+<p>1936, Alonzo Church, Cálculo lambda</p>
+<hr>
+<p>layout: false
+.left-col[</p>
+<h2 id="lambda">Lambda</h2>
+<p>cálculo lambda utiliza <strong>apenas</strong> lambdas
+]
+.right-col[
+Função fatorial, implementanda como cálculo lambda em Python</p>
+<pre><code class="language-python">(lambda f: lambda x: f(f, x))(
+(lambda f, n: 
+  (lambda cond, then, else_: cond(then, else_))(
+    (lambda n: n(lambda _: lambda a, b: b(), 
+                 lambda a, b: a()))(n), 
+     lambda: lambda f, x: f(x), 
+     lambda: (lambda n, m: lambda f, x: 
+       n(lambda y: m(f, y), x))(
+         n, 
+         f(f, 
+           (lambda n: lambda f, x: 
+             (lambda k: k(lambda a: a))
+           (n(lambda g: lambda h: h(g(f)), lambda y: x)))
+           (n))))))</code></pre>
+<p>]</p>
+<div class="WAT">WAT??!</div>
+
+<hr>
+<p>.left-col[</p>
+<h2 id="python-vs-lambda">Python vs. Lambda</h2>
+<p>]
+.right-col[</p>
+<h3 id="python">Python</h3>
+<pre><code class="language-python">def fat(n):
+    if n == 0:
+        return 1
+    else:
+        return n * fat(n - 1)</code></pre>
+<p>Funciona bem com seres humanos</p>
+<h3 id="lambda-1">Lambda</h3>
+<pre><code class="language-python">(lambda: lambda f: lambda x: ...)</code></pre>
+<p>1 expressão Python, 208 bytes gzipped, onde acrescentamos:</p>
+<ul>
+<li>Booleanos e o comando &quot;if&quot;</li>
+<li>Multiplicação e subtração de números naturais</li>
+<li>Recursão de funções</li>
+<li>(além do fatorial)
+]</li>
+</ul>
+<hr>
+<h2 id="turing-greyhardware-vs-church-greysoftware">Turing, .grey[Hardware] vs. Church, .grey[Software]</h2>
+<p>.spaced[</p>
+<ul>
+<li>Máquina de Turing<ul>
+<li>Assembler <span class="red bold">&gt;</span> Gotos <span class="red bold">&gt;</span> Programação estruturada (1958, Algol)</li>
+<li>O foco mudou para arquitetura e otimizações</li>
+</ul>
+</li>
+<li>Cálculo lambda (1958, Lisp)<ul>
+<li>*&quot;A programação pode se libertar do estilo Von Neumann?&quot;*</li>
+<li>Haskell (1990)</li>
+<li>Renascimento funcional (2000s) </li>
+</ul>
+</li>
+<li>Convergência<pre><code class="language-java">// Lambdas em Java e C++!
+(s) -&gt; System.out.println(&quot;Hello &quot; + s + &quot;!&quot;);
+[] (auto s) { cout &lt;&lt; &quot;Hello &quot; &lt;&lt; s &lt;&lt; &quot;!&quot; &lt;&lt; endl; }</code></pre>
+]</li>
+</ul>
+<hr>
+<p>name: inverse
+class: center, middle, inverse</p>
+<h1 id="python-é-funcional">Python é funcional?</h1>
+<hr>
+<p>.left-col[</p>
+<h2 id="funções-são-valores">Funções são valores</h2>
+<h3 id="--lisp-1958">- Lisp, 1958</h3>
+<p>]</p>
+<p>.right-col[</p>
+<h3 id="definimos-uma-função">Definimos uma função,</h3>
+<pre><code class="language-python">def add(x, y):
+    return x + y</code></pre>
+<h3 id="salvamos-em-algum-lugar-qualquer">salvamos em algum lugar qualquer,</h3>
+<pre><code class="language-python">operators = {&#39;+&#39;: add, &#39;-&#39;: ...}</code></pre>
+<h3 id="e-usamos-como-uma-variável-sem-cerimônias">e usamos como uma variável, sem cerimônias,</h3>
+<pre><code class="language-python">op = &#39;+&#39;
+print(operators[op](40, 2))</code></pre>
+<h2 id="">]</h2>
+<p>.left-col[</p>
+<h2 id="funções-são-valores-1">Funções são valores</h2>
+<h3 id="--são-argumentos">- São argumentos</h3>
+<p>]</p>
+<p>.right-col[</p>
+<h3 id="criamos-uma-função">Criamos uma função</h3>
+<pre><code class="language-python">def map(func, lst):
+    result = []
+    for x in lst:
+        result.append(func(x))
+    return result</code></pre>
+<h3 id="que-recebe-outra-função-como-argumento">que recebe outra função como argumento</h3>
+<pre><code class="language-python">&gt;&gt;&gt; map(abs, [-1, 2, -3, 4])
+[1, 2, 3, 4]</code></pre>
+<p>]</p>
+<hr>
+<p>.left-col[</p>
+<h2 id="funções-são-valores-2">Funções são valores</h2>
+<h3 id="--são-argumentos-1">- São argumentos</h3>
+<h3 id="--são-resultados">- São resultados</h3>
+<p>]</p>
+<p>.right-col[</p>
+<h3 id="funções-podem-criar-e-retornar-novas-funções">Funções podem criar e retornar novas funções,</h3>
+<pre><code class="language-python">def incr_by(n):
+    def incrementer(x):
+        return x + n
+    return incrementer</code></pre>
+<h3 id="onde-compomos">onde compomos</h3>
+<pre><code class="language-python">&gt;&gt;&gt; map(incr_by(2), [10, 20, 30, 40])
+[12, 22, 32, 42]</code></pre>
+<h3 id="e-transformamos">e transformamos</h3>
+<pre><code class="language-python">def flip(f):
+    def flipped(x, y):
+        return f(y, x)
+    return flipped</code></pre>
+<p>]</p>
+<hr>
+<p>.left-col[</p>
+<h2 id="funções-são-valores-3">Funções são valores</h2>
+<h3 id="--são-argumentos-2">- São argumentos</h3>
+<h3 id="--são-resultados-1">- São resultados</h3>
+<h3 id="--lambdas">- Lambdas</h3>
+<p>]</p>
+<p>.right-col[</p>
+<h3 id="lambdas-definem-funções-como-expressões">Lambdas definem funções como expressões</h3>
+<pre><code class="language-python">flip2 = lambda f: lambda x, y: f(y, x)</code></pre>
+<h3 id="internamente-são-idênticas-às-funções-normais">Internamente são idênticas às funções normais</h3>
+<pre><code class="language-python">&gt;&gt;&gt; type(flip2) == type(flip)
+True</code></pre>
+<h3 id="lambdas-são-limitadas-a-um-único-comando-porque-o-guido-quis-e-é-tudo-o-que-precisamos">Lambdas são limitadas a um único comando (porque o Guido quis e é tudo o que precisamos)</h3>
+<pre><code class="language-python">&gt;&gt;&gt; map(lambda x: 2 * x, [1, 2, 3, 4])
+[2, 4, 6, 8]</code></pre>
+<p>]</p>
+<hr>
+<p>class: center, middle, inverse</p>
+<h1 id="exemplo">Exemplo</h1>
+<h2 id="lista-simplesmente-encadeada">Lista simplesmente encadeada</h2>
+<hr>
+<p>.left-col[</p>
+<h2 id="lista">Lista</h2>
+<h3 id="--imutável">- Imutável</h3>
+<h3 id="--eficiente">- Eficiente</h3>
+<h3 id="--simples">- Simples</h3>
+<p>]</p>
+<p>.right-col[</p>
+<h3 id="pares-de-valores-terminados-em-none">Pares de valores terminados em None</h3>
+<pre><code class="language-python">from collections import namedtuple
+
+cons = namedtuple(&#39;Cell&#39;, [&#39;head&#39;, &#39;tail&#39;])</code></pre>
+<img src="/linked-list.ec44f056.png" style="width: 130%; transform: translate(-10%, 35%) rotate(-13deg);">
+]
+
+<hr>
+<p>.left-col[</p>
+<h2 id="lista-1">Lista</h2>
+<h3 id="--imutável-1">- Imutável</h3>
+<h3 id="--eficiente-1">- Eficiente</h3>
+<h3 id="--simples-1">- Simples</h3>
+<h3 id="--folds">- Folds!</h3>
+<p>]</p>
+<p>.right-col[</p>
+<h3 id="precisamos-conhecer-duas-funções">Precisamos conhecer duas funções</h3>
+<p>Aplica <code>f</code> em cada par de elementos reduzindo a lista da direita para a esquerda...</p>
+<pre><code class="language-python">def foldr(f, start, lst):
+    if lst is None:
+        return start
+    else:
+        return f(lst.head, foldr(f, start, lst.tail))</code></pre>
+<p>...ou da esquerda para a direita</p>
+<pre><code class="language-python">def foldl(f, start, lst):
+    while lst is not None:
+        head, lst = lst
+        start = f(head, start)
+    return start</code></pre>
+<p>]</p>
+<hr>
+<h3 id="composição">Composição</h3>
+<p>.pull-left[</p>
+<pre><code class="language-python">add = lambda x, y: x + y
+
+def sum(xs):
+    return fold(add, 0, xs)</code></pre>
+<p>]</p>
+<p>.pull-right[</p>
+<pre><code class="language-python">join = lambda x, y: f&#39;{x}, {y}&#39;
+
+def show(xs):
+    return fold(join, &#39;&#39;, xs)</code></pre>
+<p>]</p>
+<p>.margin-1.center[
+<strong>Note o padrão:</strong> funções usam <code>fold</code> fixando os primeiros argumentos
+]</p>
+<p>.center[
+<i class="fa fa-angle-double-down red" style="font-size: 4rem"></i>
+]</p>
+<p>.pull-left[</p>
+<pre><code class="language-python">from functools import partial
+from operator import add, mul
+
+
+sum = partial(fold, add, 0)
+product = partial(fold, mul, 1)
+show = partial(fold, join, &#39;&#39;)</code></pre>
+<p>]</p>
+<p>.pull-right[</p>
+<pre><code class="language-python">from sidekick import curry
+
+fold = curry(3, fold)
+
+sum = fold(add, 0)
+product = fold(mul, 1)
+show = fold(join, &#39;&#39;)</code></pre>
+<p>]</p>
+<p>.center[
+Criamos novas funções por <em>especialização</em>
+]</p>
+<hr>
+<h2 id="biblioteca-completa-de-one-liners">Biblioteca completa de <em>one-liners*</em></h2>
+<pre><code class="language-python"># Tamanho da lista
+length = fold(lambda _, n: n + 1, 0)
+
+# Concatena duas listas
+concat = flip(foldr(cons))
+
+# Inverte lista
+reverse = foldl(cons, None)
+
+# Aplica função em cada elemento da lista
+map = lambda f, xs: foldr(lambda x, y: cons(f(x), y), None, xs)
+
+# Seleciona elementos aceitos pelo predicado
+filter = lambda pred, xs: foldr(filter_f(pred), None, xs)
+
+# Intercala x nos elementos da lista
+intersperse = lambda x, xs: cons(xs.head, foldr(interspace_f(x), None, xs.tail))
+
+
+# Funções auxiliares
+filter_f = lambda pred: lambda x, lst: cons(x, lst) if pred(x) else lst
+interspace_f = lambda sep: lambda x, lst: cons(sep, cons(x, lst))</code></pre>
+<p>.right[*às vezes é necessário desenhar para entender...]</p>
+<hr>
+<p>class: center, middle, inverse</p>
+<h1 id="pequenas-funções-superpoderosas">Pequenas funções, superpoderosas</h1>
+<img src="/superpoderosas.d0b1ef14.png" style="width: 75%">
+
+<hr>
+<hr>
+<h4 id="nota-sobre-decoradores-repassando-argumentos">Nota sobre decoradores: repassando argumentos</h4>
+<pre><code class="language-python">def add(x, y):
+    return x + y
+
+&gt;&gt;&gt; add(1, 2)
+3
+&gt;&gt;&gt; args = (1, 2)
+&gt;&gt;&gt; add(*args)
+3
+&gt;&gt;&gt; kwargs = {&#39;x&#39;: 1, &#39;y&#39;: 2}
+&gt;&gt;&gt; add(**kwargs)
+3</code></pre>
+<p>@[1-2] (Definimos uma função)
+@[4-5] (Chamada de função &quot;tradicional&quot;)
+@[6-8] (Passando lista de argumentos)
+@[9-11] (Passando argumentos por nome)</p>
+<hr>
+<h3 id="nota-lambdas">Nota: Lambdas</h3>
+<pre><code class="language-python">add = lambda x, y: x + y</code></pre>
+<p>@ul</p>
+<ul>
+<li>Podem ser utilizadas como valores diretamente</li>
+<li>Aceita uma única linha de comando que deve ser uma expressão</li>
+<li>Similares às funções do cálculo lambda 
+@ulend</li>
+</ul>
+<hr>
+<h2 id="conceitos-de-programação-funcional">Conceitos de programação funcional:</h2>
+<h3 id="funções-puras">Funções puras</h3>
+<hr>
+<h3 id="funções-puras-1">Funções puras</h3>
+<p>Calcula um valor para cada grupo de argumentos (e não faz mais nada além disto)</p>
+<pre><code class="language-python">def pura(x, y):
+    # Não produz efeitos colaterais
+    # Não modifica estado global
+    # Não depende de estado global mutável
+    # Não tem saídas aleatórias
+    # Não pode modificar estrutura de dados mutáveis
+    # Não faz IO
+    return x + y</code></pre>
+<p>@[2]
+@[3]
+@[4]
+@[5]
+@[6]
+@[7]
+@[1-8](Funções no sentido matemático)
+@[1-8](Funções puras são definidas pela interface e não pela implementação)</p>
+<hr>
+<h3 id="anti-patterns">Anti-patterns</h3>
+<pre><code class="language-python">def join_lists(list_a, list_b):
+    list_a.extend(list_b)
+    return list_a
+
+def impura_disfarçada(x, y):
+    if random.random() &lt; 0.01:
+        dispare_os_mísseis()
+    return x + y</code></pre>
+<p>@[1-3](Modifica objeto mutável)
+@[5-8](Parece função, mas não é)
+@[1-8](Python é uma linguagem impura: pureza precisa ser mantida por disciplina)</p>
+<hr>
+<h3 id="pureza">Pureza</h3>
+<ul>
+<li>Testáveis e fáceis de entender</li>
+<li>Menos bugs</li>
+<li>Paralelizável</li>
+<li>Reutilizável</li>
+</ul>
+<hr>
+<h2 id="conceitos-de-programação-funcional-1">Conceitos de programação funcional:</h2>
+<h3 id="composição-de-funções">Composição de funções</h3>
+<hr>
+<h3 id="arquiteturas-funcionais">Arquiteturas funcionais</h3>
+<p>@ul</p>
+<ul>
+<li>Funções são Lego e classes Playmobil</li>
+<li>Encadeamos funções simples para gerar funções mais complexas</li>
+<li>Centrado em dados: T(data) -&gt; new_data</li>
+<li>Grande reaproveitamento de código
+@ulend</li>
+</ul>
+<hr>
+<h3 id="padrão-recorrente-pipeline">Padrão recorrente: pipeline</h3>
+<pre><code class="language-python">a = f1(inputs)
+b = f2(a)
+c = f3(b)
+...
+result = fn(n)</code></pre>
+<hr>
+<h3 id="abstraímos-o-padrão">Abstraímos o padrão...</h3>
+<pre><code class="language-python">def pipe(x, *funcs):
+    for f in funcs:
+        x = f(x)
+    return x
+
+&gt;&gt;&gt; pipe(-2, abs, sqrt, str)
+&#39;1.4142135623730951&#39;</code></pre>
+<p>@[6-7] (Argumento passa pelas funções da esquerda para a direita)
+@[1-4] (Aplicamos cada função ao resultado da anterior)</p>
+<hr>
+<h3 id="composição-1">Composição</h3>
+<pre><code class="language-python">def compose(*funcs):
+    return lambda x: pipe(x, *funcs)
+
+&gt;&gt;&gt; f = compose(abs, sqrt, str)
+&gt;&gt;&gt; f(-2)
+&#39;1.4142135623730951&#39;
+&gt;&gt;&gt; f(4)
+&#39;2.0&#39;</code></pre>
+<p>@[4] (Criamos a função de pipeline...)
+@[5-8] (... e chamamos várias vezes)
+@[1-2] (Basta extrair o argumento do pipe)</p>
+<hr>
+<h3 id="explosão-de-lambdas">Explosão de Lambdas</h3>
+<pre><code class="language-python">to_table = compose(
+    str.splitlines,
+    lambda lines: map(lambda line: line.split(&#39;,&#39;), lines),
+    lambda lines: map(lambda line: map(float, line), lines),
+)</code></pre>
+<p>@[2] (Separa string em linhas)
+@[3] (Mapeia função para separar linhas nas vírgulas)
+@[4] (Aplica a função float a cada elemento)
+@[1-5] (Código semi-ilegível)</p>
+<hr>
+<h3 id="podemos-mudar-o-map-e-simplificar">Podemos mudar o map e simplificar</h3>
+<pre><code class="language-python">def fmap(f): 
+    return lambda data: map(f, data)
+
+split = lambda sep: lambda st: st.split(sep)
+
+to_table = compose(
+    str.splitlines,
+    fmap(split(&#39;,&#39;)),
+    fmap(fmap(float)),
+)</code></pre>
+<p>@[1-2] (Recebe f e retorna função que aplica f no argumento com map)
+@[8-9] (Não precisamos criar o lambda que recebe as linhas)
+@[4] (Generalizamos o split)</p>
+<hr>
+<h3 id="currying">Currying</h3>
+<pre><code class="language-python">add = lambda x, y: x + y
+add_curried = lambda x: lambda y: x + y
+
+&gt;&gt;&gt; add(1, 2), add_curried(1)(2)
+(3, 3)
+&gt;&gt;&gt; succ = add_curried(1)
+&gt;&gt;&gt; succ(41)
+42</code></pre>
+<p>@[2] (Recebe um argumento por vez e retorna funções que esperam os argumentos restantes)
+@[4-5] (A assinatura não fica particularmente bonita)
+@[6] (É fácil de criar novas funções por aplicação parcial)
+@[7-8]</p>
+<hr>
+<h3 id="auto-curry">Auto-Curry</h3>
+<pre><code class="language-python">def curry(arity, f):
+    def curried(*args, **kwargs):
+        if len(args) &gt;= arity:
+            return f(*args)
+        return lambda *extra: curried(*args, *extra)
+    return curried
+
+curry = curry(2, curry)
+
+@curry(2)
+def add(x, y):
+    return x + y</code></pre>
+<p>@[10-12] (Podemos fazer um curry automático?)
+@[1] (Aridade = número de argumentos esperados)
+@[3-4] (Retorna se receber todos argumentos)
+@[5] (Caso contrário, retorna uma aplicação parcial)
+@[8] (Aplicamos no próprio curry para usá-la como decorador)
+@[10-12]</p>
+<hr>
+<h2 id="conceitos-de-programação-funcional-2">Conceitos de programação funcional:</h2>
+<h3 id="geradores-iteradores-etc">Geradores, iteradores, etc</h3>
+<hr>
+<h3 id="lazyness">Lazyness</h3>
+<p>@ul</p>
+<ul>
+<li>Estruturas de dados funcionais são imutáveis</li>
+<li>Em Python não são...</li>
+<li>Mas abstrai sequências como iteratores de forma consistente</li>
+<li>Num iterador, usamos cada valor somente uma vez
+@ulend</li>
+</ul>
+<hr>
+<h3 id="compreensões-de-lista">Compreensões de lista</h3>
+<pre><code class="language-python">def map(func, lst):
+    return [func(x) for x in lst]
+
+def filter(pred, lst):
+    return [x for x in lst if pred(x)]</code></pre>
+<p>@[1-2] (Sequência de valores gerada por um laço for)
+@[4-5] (É possível filtrar valores utilizando um &quot;if&quot;)</p>
+<hr>
+<h3 id="nota-também-temos-dicionários-conjuntos-e-geradores">Nota: Também temos dicionários, conjuntos e geradores</h3>
+<pre><code class="language-python">lazy = (func(x) for x in lst)
+conjunto = {func(x) for x in lst}
+dicionario = {x: func(x) for x in lst}</code></pre>
+<hr>
+<h3 id="geradores">Geradores</h3>
+<pre><code class="language-python">def fibos():
+    x, y = 1, 1
+    yield from (x, y)
+
+    while True:
+        x, y = y, y + x
+        yield y
+
+# Loop infinito: objectos são calculados sob demanda
+for x in fibos():
+    print(x)    </code></pre>
+<p>@[9-11] (Extraímos elementos chamando gerador em um laço for ou criando lista)
+@[1] (Geradores são funções que &quot;retornam&quot; várias vezes)
+@[7] (yield retorna um valor, mas não interrompe a função)
+@[3] (yield from retorna todos valores de uma lista)</p>
+<hr>
+<h3 id="dicas">Dicas</h3>
+<h4 id="para-fazer-em-casa">(para fazer em casa...)</h4>
+<hr>
+<h3 id="manipulando-iteradores">Manipulando iteradores</h3>
+<pre><code class="language-python">&gt;&gt;&gt; itertools.count()
+0, 1, 2, 3, ...
+&gt;&gt;&gt; map(f, [a, b, c, ...])
+f(a), f(b), f(c), ...
+&gt;&gt;&gt; filter(pred, [ok_a, bad, ok_b, ...])
+ok_a, ok_b, ...
+&gt;&gt;&gt; functools.reduce(f, [a, b, c, ...])
+f(f(f(a, b), c), ...)
+&gt;&gt;&gt; itertools.chain([a, b], [c, d, ...])
+a, b, c, d, ...
+&gt;&gt;&gt; itertools.islice([a, b, c, ...], 0, 3)
+a, b, c</code></pre>
+<p>@[1-2] (Conta números indefinidamente)
+@[3-4] (Aplica f em cada elemento do iterador)
+@[5-6] (Mantêm apenas elementos em que pred(ok) == True)
+@[7-8] (Reduz o iterador pela aplicação de operador)
+@[9-10] (Junta dois ou mais iteráveis)
+@[11-12] (Fatia iterador como se fosse lista)</p>
+<hr>
+<h2 id="receitas">Receitas</h2>
+<h4 id="algoritmos">(algoritmos)</h4>
+<hr>
+<h3 id="raiz-de-um-número">Raiz de um número</h3>
+<ul>
+<li>Raiz de x: iteramos a relação de recorrência r&#39; = (x/r + r) / 2</li>
+<li>Inicia-se tipicamente em x=1</li>
+<li>Convergência rápida</li>
+</ul>
+<hr>
+<h3 id="recorência">Recorência</h3>
+<h4 id="vamos-construir-nosso-arsenal-funcional">(vamos construir nosso arsenal funcional)</h4>
+<pre><code class="language-python">@curry(2)
+def repeat(r, f):
+    yield r
+    while True:
+        r = f(r)
+        yield r
+
+&gt;&gt;&gt; rec_sqrt_2 = lambda r: 0.5 * (2 / r + r)
+&gt;&gt;&gt; repeat(1.0, rec_sqrt_2)
+1.0, 1.5, 1.41666, 1.4142156862745097, ...</code></pre>
+<p>@[7] (Definimos relação de recorrência)
+@[8-9] (Gera um stream infinito)
+@[2] (Gera valor sem aplicar)
+@[4-5] (Aplica função e gera)
+@[1-5] (Trata-se de um gerador infinito)</p>
+<hr>
+<h3 id="convergência">Convergência</h3>
+<h4 id="sabendo-quando-parar">(sabendo quando parar)</h4>
+<pre><code class="language-python">def within(eps, it):
+    it = iter(it)
+    y = next(it)
+    for x in it:
+        if abs(x - y) &lt; eps:
+            return x
+        y = x
+
+&gt;&gt;&gt; within(0.1, repeat(1.0, rec_sqrt_2))
+1.0, 1.5, 1.41666</code></pre>
+<p>@[3] (Extrai o primeiro elemento do iterador)
+@[4] (Retorna os termos subsequentes, comparando com o anterior)
+@[5-6] (Para quando a diferença estiver na tolerância)</p>
+<hr>
+<h3 id="juntamos-tudo">Juntamos tudo</h3>
+<pre><code class="language-python">def sqrt(y):
+    return within(1e-9, repeat(1, rec_sqrt(y)))
+
+req_sqrt = lambda x: lambda r: 0.5 * (x / r + r)
+sqrt = compose(rec_sqrt(y),
+               repeat(1),
+               within(1e-9)) </code></pre>
+<p>@[1-2] (Mantemos algum apego ao Python tradicional)
+@[3] (Onde definimos a relação de recorrência &quot;curried&quot;)
+@[5-7] (Funcional nota 10)
+@[5] (Fácil trocar a regra de recorrência...)
+@[7] (...e o critério de convergência)
+@[6] (além de explorar convergência acelerada e outros métodos)</p>
+<hr>
+<h2 id="melhore-seu-kung-fu">Melhore seu kung-fu</h2>
+<hr>
+<h3 id="python-não-é-funcional">Python não é funcional...</h3>
+<p>@ul</p>
+<ul>
+<li>Não acredite em &quot;multiparadigma&quot;</li>
+<li>Exige disciplina</li>
+<li>Mutabilidade em todo canto</li>
+<li>Estruturas de dados e tipos inadequadas</li>
+<li>Sintaxe carregada e imperativa</li>
+<li>Recursão e abstrações podem ser caras</li>
+<li>Pouquíssimas garantias estáticas
+@ulend</li>
+</ul>
+<hr>
+<h3 id="the-good">The good</h3>
+<p>@ul</p>
+<ul>
+<li>Funções são valores</li>
+<li>Geradores e iteradores</li>
+<li>Lambdas</li>
+<li>Expressiva: libs podem usar truques de sintaxe para criar idiomas mais naturais
+@ulend</li>
+</ul>
+<hr>
+<h3 id="programação-funcional-para-o-bem-comum">Programação funcional para o bem comum!</h3>
+<p>@ul</p>
+<ul>
+<li>Entenda o fluxo de dados e não o diagrama de classes</li>
+<li>Mostre seus dados com iterfaces imutáveis</li>
+<li>Componha funções<ul>
+<li>função boa é uma função pequena</li>
+<li>prefira funções puras</li>
+</ul>
+</li>
+<li>Não tenha medo da segunda ordem</li>
+<li>Use iteradores sempre que possível
+@ulend</li>
+</ul>
+<hr>
+<h2 id="p-casa-orientação-a-objetos">P/ casa: Orientação a objetos</h2>
+<h3 id="conciliação-e-disputa">Conciliação e disputa</h3>
+<hr>
+<h3 id="mais-funções-menos-classes">Mais funções, menos classes</h3>
+<pre><code class="language-python">class Class:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
+
+    def func(self, c):
+        return do_something(self.a, self.b, c)
+
+def func(a, b, c):
+    return do_something(a, b, c)
+
+func(a, b, c) == Class(a, b).func(c)
+
+obj = Class(a, b, c)
+obj = functools.partial(func, a, b)
+obj_alt = functools.partial(func, a)</code></pre>
+<p>@[1-8] (Falsa classe)
+@[10-13] (Na verdade é uma função)
+@[15-17] (&quot;objeto&quot; é uma aplicação parcial)</p>
+<hr>
+<h3 id="menos-herança-mais-reaproveitamento">Menos herança, mais reaproveitamento</h3>
+<pre><code class="language-python">apply = lambda f, attr: lambda self: func(getattr(self, attr))
+
+class ClassA:
+    def common(self): pass
+
+class ClassB:
+    common = ClassA.common
+    answer = lambda self: 42
+    method = apply(some_func, &#39;attribute&#39;)</code></pre>
+<p>@[1-9] (Herança = &quot;é um&quot;, não &quot;tem mesmos métodos que&quot;)</p>
+<hr>
+<h3 id="menos-trabalho-agora">Menos trabalho agora</h3>
+<pre><code class="language-python">from sidekick import lazy
+from dataclasses import dataclass
+
+@dataclass
+class Vec:
+    x: float
+    y: float
+
+    abs = lazy(lambda self: sqrt(self.x**2 + self.y**2))
+    abs_ = property(lambda self: sqrt(self.x**2 + self.y**2))</code></pre>
+<p>@[4] (Inicialização atrasada)
+@[5] (Resultado sem cache)</p>
+<hr>
+<h3 id="abuse-de-protocolos">Abuse de protocolos</h3>
+<ul>
+<li>Reutilize APIs conhecidas</li>
+<li>Conheça o módulo <code>collections</code></li>
+<li>Favoreça builtins no lugar de classes próprias</li>
+<li>Conheça types.SimpleNamespace e collections.namedtuple</li>
+<li>Conheça os protocolos: iterable, iterator, decorator, context manager, descriptor, class, etc...</li>
+</ul>
+<hr>
+<h3 id="saiba-fazer-dsls">Saiba fazer DSLs</h3>
+<h4 id="e-use-com-moderação">(e use com moderação)</h4>
+<pre><code class="language-python">from operator import *
+from functools import partial
+
+bin_op = (
+    lambda op: lambda self, other:
+    op if other is _ else partial(op, other))
+
+class placeholder:
+    __add__ = bin_op(add)
+    __mul__ = bin_op(mul)
+    ...
+&lt;div&gt;
+_ = placeholder()
+incr = _ + 1
+half = _ / 2
+inverse = 1 / _
+add = _ + _</code></pre>
+<hr>
+<h3 id="conciliação">Conciliação</h3>
+<p>@ul</p>
+<ul>
+<li>Substitua classes inúteis por funções</li>
+<li>Favoreça classes imutáveis</li>
+<li>Use protocolos estabelecidos, crie valores versáteis</li>
+<li>Entenda o que a classe representa</li>
+<li>Seja preguiçoso
+@ulend</li>
+</ul>
+<hr>
+<h2 id="saiba-mais">Saiba mais</h2>
+<h3 id="referências-projetos-linguagens-etc">Referências, projetos, linguagens, etc</h3>
+<hr>
+<h3 id="referências">Referências</h3>
+<ul>
+<li><a href="https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf">Why Functional Programming Matters</a></li>
+<li><a href="http://kachayev.github.io/talks/uapycon2012/index.html">Functional Programming with Python</a></li>
+<li><a href="https://www.youtube.com/watch?v=o9pEzgHorH0">Stop writing classes</a></li>
+<li><a href="http://learnyouahaskell.com/">Learn You a Haskell for Great Good!</a></li>
+</ul>
+<hr>
+<h3 id="bibliotecas">Bibliotecas</h3>
+<ul>
+<li>Stdlib<ul>
+<li>itertools, functools, operator</li>
+</ul>
+</li>
+<li>Outros<ul>
+<li><a href="https://toolz.readthedocs.io/en/latest/">toolz</a></li>
+<li><a href="https://github.com/kachayev/fn.py">fn.py</a></li>
+<li><a href="https://pypi.org/project/sidekick/">sidekick (beta)</a></li>
+<li><a href="https://docs.djangoproject.com/en/2.1/_modules/django/utils/functional/">django.utils.functional</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="outras-linguagens">Outras linguagens</h3>
+<ul>
+<li>ELM: puramente funcional para Frontend</li>
+<li>Haskell: funcional séria</li>
+<li>Scala: funcional + OO</li>
+<li>Scheme: LISP muito utilizada  </li>
+<li>Clojure: uma LISP moderna</li>
+</ul>
