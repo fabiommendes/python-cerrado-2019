@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "marked": "^0.7.0"
+  }
+}
