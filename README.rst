@@ -7,7 +7,7 @@ Python Cerrado 2019
 
 Apresentação para a Python Cerrado 2019.
 
-**Link para a apresentação*
+**Link para a apresentação**
 
 https://fabiommendes.github.io/python-cerrado-2019/
 
