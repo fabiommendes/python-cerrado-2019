@@ -1,3 +1,7 @@
+.. warning::
+
+   This repository is archived. It holds the slides from the Python Cerrado 2019 talk and is kept for reference.
+
 ==========================================
 Programação funcional em Python. Funciona?
 ==========================================
